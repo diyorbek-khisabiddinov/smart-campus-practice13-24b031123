@@ -2,6 +2,8 @@
 
 **Student:** Diyorbek Khissabiddinov · **ID:** 24B031123
 
+**Live deployment:** [Open the Smart Campus app](https://smart-campus-practice13-24b031123.vercel.app)
+
 This React and TypeScript demo checks one selected room at a time using the
 three inherited fictional room fixtures. It uses an editable demo clock and
 keeps booking data in memory. There is no login, database, or runtime service

@@ -6,7 +6,7 @@ Software Engineering · Practice #13 · 24 November 2026
 
 This practice compares the React/TypeScript checker built in Bolt with a low-code implementation in Appsmith. A student checks whether a fictional campus room is free for a requested interval. The demo clock is set to 09:00. Room A101 has one scheduled class, Calculus 201, from 10:00 to 11:00.
 
-[Open the Bolt demo](https://smart-campus-room-av-50i2.bolt.host) · [Open the Appsmith demo](https://smart-campus-lab.appsmith.com/app/my-first-application/page1-6b0558e0998af5f9e41dffe7)
+[Open the deployed app](https://smart-campus-practice13-24b031123.vercel.app) · [GitHub repository](https://github.com/diyorbek-khisabiddinov/smart-campus-practice13-24b031123) · [Open the Appsmith demo](https://smart-campus-lab.appsmith.com/app/my-first-application/page1-6b0558e0998af5f9e41dffe7)
 
 ## Project files
 
