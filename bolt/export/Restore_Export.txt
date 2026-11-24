@@ -1,0 +1,58 @@
+# Restore the attached JSON export with Python 3.
+# Run this command from the folder containing both attachments.
+# python Restore_Export.txt SmartCampus_Practice12_Export.json restored
+# Then open restored/SmartCampus_Practice12/project for the source project.
+# A self-contained demo is restored/SmartCampus_Practice12/SmartCampus_Practice12_Demo.html.
+
+import base64
+import hashlib
+import json
+import sys
+from pathlib import Path, PurePosixPath
+
+
+def restore(export_file, destination):
+    bundle = json.loads(Path(export_file).read_text(encoding="utf-8"))
+    if bundle["format"] != "smart-campus-source-export" or bundle["version"] != 1:
+        raise ValueError("Unsupported source export")
+
+    target = Path(destination).resolve()
+    if target.exists():
+        raise FileExistsError("Choose a new destination folder")
+
+    verified = []
+    paths = set()
+    for item in bundle["files"]:
+        name = item["path"]
+        relative = PurePosixPath(name)
+        if (relative.is_absolute() or not relative.parts or
+                any(part in ("", ".", "..") for part in relative.parts) or
+                "\\" in name or ":" in name):
+            raise ValueError("Invalid export path")
+        if name.casefold() in paths:
+            raise ValueError("Duplicate export path")
+        paths.add(name.casefold())
+
+        if item["encoding"] == "utf-8":
+            contents = item["content"].encode("utf-8")
+        elif item["encoding"] == "base64":
+            contents = base64.b64decode(item["content"], validate=True)
+        else:
+            raise ValueError("Unsupported file encoding")
+
+        if hashlib.sha256(contents).hexdigest() != item["sha256"]:
+            raise ValueError("File integrity check failed for " + name)
+        verified.append((relative, contents))
+
+    target.mkdir(parents=True, exist_ok=False)
+    for relative, contents in verified:
+        file = target.joinpath(*relative.parts)
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_bytes(contents)
+    print("Restored", len(verified), "files to", target)
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        raise SystemExit("Usage  python Restore_Export.txt export.json new_folder")
+    restore(sys.argv[1], sys.argv[2])
